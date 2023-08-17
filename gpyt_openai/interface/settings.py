@@ -6,6 +6,7 @@ from pydantic import AnyUrl
 
 class Settings(ABC):
     resources: List[Dict[str, Callable[..., Any]]]
+    targets: Dict[str, str]
     log_level: str
     command_bus_url: AnyUrl
     openai_url: AnyUrl

@@ -10,13 +10,23 @@ from gpyt_openai.interface.settings import Settings
 
 def register_as_target(settings: Settings) -> None:
     url = str(settings.command_bus_url) + "/target"
-    my_obj = {"name": "openai", "url": str(settings.openai_url)}
-    cmd_res = requests.post(url, json=my_obj, timeout=5)
-    # response code should be 201 or 409, else raise error
-    if cmd_res.status_code != 201 and cmd_res.status_code != 409:
-        raise Exception(  # pylint: disable=broad-exception-raised
-            "Error registering as target for command_bus"
-        )
+    for item_key, item_value in settings.targets.items():
+        my_obj = {"name": item_key, "url": f"{str(settings.openai_url)}/{item_value}"}
+        cmd_res = requests.post(url, json=my_obj, timeout=5)
+        # response code should be 201 or 409, else raise error
+        if not (cmd_res.status_code == 201 or cmd_res.status_code == 409):
+            raise Exception(  # pylint: disable=broad-exception-raised
+                "Error registering as target for command_bus"
+            )
+    url = str(settings.event_bus_url) + "/subscriber"
+    for item_key, item_value in settings.targets.items():
+        my_obj = {"url": f"{str(settings.openai_url)}/{item_value}/event"}
+        cmd_res = requests.post(url, json=my_obj, timeout=5)
+        # response code should be 201 or 409, else raise error
+        if not (cmd_res.status_code == 201 or cmd_res.status_code == 409):
+            raise Exception(  # pylint: disable=broad-exception-raised
+                "Error registering as target for event_bus"
+            )
 
 
 class AppModule(Module):

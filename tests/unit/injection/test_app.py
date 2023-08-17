@@ -15,7 +15,7 @@ class TestAppModule(unittest.TestCase):
         self.settings.command_bus_url = "http://localhost:8080"
         self.settings.openai_url = "http://localhost:8081"
         self.settings.log_level = "INFO"
-        self.settings.event_store_url = "http://localhost:8082"
+        self.settings.event_bus_url = "http://localhost:8082"
         self.logger = MagicMock()
 
     def test_get_app(self):
@@ -24,6 +24,7 @@ class TestAppModule(unittest.TestCase):
         # Mock resource settings
         resource_settings = {"/path1": MagicMock(), "/path2": MagicMock()}
         self.settings.resources = [resource_settings]
+        self.settings.targets = {"foo": MagicMock()}
 
         # Mock Flask and Api objects
         mock_flask = MagicMock(spec=Flask)
