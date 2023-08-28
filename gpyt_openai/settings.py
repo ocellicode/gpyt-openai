@@ -5,14 +5,12 @@ from pydantic import AnyUrl, BaseSettings, PyObject
 from gpyt_openai.interface.settings import Settings as ICommandBusSettings
 from gpyt_openai.resources.create_template import CreateTemplate
 from gpyt_openai.resources.event.resource import TemplateEvent
-from gpyt_openai.resources.root import Root
 
 LogLevel = Literal["TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 class Settings(BaseSettings, ICommandBusSettings):
     resources: List[Dict[str, PyObject]] = [
-        {"/": Root},
         {"/create-template": CreateTemplate},
         {"/event": TemplateEvent},
     ]
