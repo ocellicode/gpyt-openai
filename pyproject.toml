@@ -243,11 +243,8 @@ plugins = [
     "sqlmypy",
 ]
 
-
 [[tool.mypy.overrides]]
-module = [
-    "flask_restful"
-]
+module = "flask_restful"
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

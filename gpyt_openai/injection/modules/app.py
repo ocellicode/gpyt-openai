@@ -6,7 +6,7 @@ from flask_restful import Api
 from opyoid import Module, SingletonScope
 
 from gpyt_openai.interface.settings import Settings
-from gpyt_openai.aggregate.template.template_root import TemplateRoot
+from gpyt_openai.interface.template_aggregate_root import TemplateAggregateRoot
 
 
 def register_as_target(settings: Settings) -> None:
@@ -31,7 +31,11 @@ def register_as_target(settings: Settings) -> None:
 
 class AppModule(Module):
     @staticmethod
-    def get_app(settings: Settings, logger: Logger) -> Flask:
+    def get_app(
+        settings: Settings,
+        logger: Logger,
+        template_aggregate_root: TemplateAggregateRoot,
+    ) -> Flask:
         app = Flask(__name__)
         api = Api(app)
         for res in settings.resources:
@@ -41,7 +45,7 @@ class AppModule(Module):
                     key,
                     resource_class_kwargs={
                         "logger": logger,
-                        "template_root": TemplateRoot(settings=settings, logger=logger),  # type: ignore
+                        "template_root": template_aggregate_root,  # type: ignore
                     },
                 )
         register_as_target(settings)

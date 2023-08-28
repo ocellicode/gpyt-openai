@@ -18,5 +18,5 @@ class CreateTemplate(Resource):
         try:
             self.template_root.create_template(request_json)
             return {"message": "template created"}, 201
-        except Exception as e:
-            return {"error": f"Error creating template: {e}"}, 400
+        except Exception as excpt:  # pylint: disable=broad-except
+            return {"error": f"Error creating template: {excpt}"}, 400
