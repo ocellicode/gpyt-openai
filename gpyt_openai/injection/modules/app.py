@@ -6,6 +6,7 @@ from flask_restful import Api
 from opyoid import Module, SingletonScope
 
 from gpyt_openai.interface.settings import Settings
+from gpyt_openai.aggregate.template.template_root import TemplateRoot
 
 
 def register_as_target(settings: Settings) -> None:
@@ -19,14 +20,13 @@ def register_as_target(settings: Settings) -> None:
                 "Error registering as target for command_bus"
             )
     url = str(settings.event_bus_url) + "/subscriber"
-    for item_key, item_value in settings.targets.items():
-        my_obj = {"url": f"{str(settings.openai_url)}/{item_value}/event"}
-        cmd_res = requests.post(url, json=my_obj, timeout=5)
-        # response code should be 201 or 409, else raise error
-        if not (cmd_res.status_code == 201 or cmd_res.status_code == 409):
-            raise Exception(  # pylint: disable=broad-exception-raised
-                "Error registering as target for event_bus"
-            )
+    my_obj = {"url": f"{str(settings.openai_url)}/event"}
+    cmd_res = requests.post(url, json=my_obj, timeout=5)
+    # response code should be 201 or 409, else raise error
+    if not (cmd_res.status_code == 201 or cmd_res.status_code == 409):
+        raise Exception(  # pylint: disable=broad-exception-raised
+            "Error registering as target for event_bus"
+        )
 
 
 class AppModule(Module):
@@ -41,6 +41,7 @@ class AppModule(Module):
                     key,
                     resource_class_kwargs={
                         "logger": logger,
+                        "template_root": TemplateRoot(settings=settings, logger=logger),  # type: ignore
                     },
                 )
         register_as_target(settings)
