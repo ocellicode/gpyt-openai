@@ -1,6 +1,7 @@
 import pytest
 
 from gpyt_openai.resources.create_template import CreateTemplate
+from gpyt_openai.resources.delete_template import DeleteTemplate
 from gpyt_openai.resources.event import TemplateEvent
 from gpyt_openai.settings import Settings
 
@@ -15,6 +16,7 @@ def test_default_values(settings):
     assert settings.resources == [
         {"/create-template": CreateTemplate},
         {"/event": TemplateEvent},
+        {"/delete-template": DeleteTemplate},
     ]
 
 

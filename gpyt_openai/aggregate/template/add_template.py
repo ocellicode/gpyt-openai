@@ -13,16 +13,3 @@ class AddTemplate:
         if event["event_type"] == "template_created":
             state.append(Template(aggregate_id=event["aggregate_id"], **event["data"]))
         return state
-
-    @staticmethod
-    def add_many(events: List[dict], state: List[Template]):
-        logger.trace(f"add_many called with events: {events}")
-        logger.trace(f"state: {state}")
-        for event in events:
-            logger.trace(f"event: {event}")
-            if event["event_type"] == "template_created":
-                state.append(
-                    Template(aggregate_id=event["aggregate_id"], **event["data"])
-                )
-                logger.trace(f"state: {state}")
-        return state
