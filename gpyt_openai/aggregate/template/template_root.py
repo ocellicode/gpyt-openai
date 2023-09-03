@@ -69,7 +69,7 @@ class TemplateRoot(TemplateAggregateRoot):
             "event_type": "template_updated",
             "meta_data": {},
             "revision": template.revision + 1,
-            "data": template.dict(exclude={"aggregate_id"}),
+            "data": template.dict(exclude={"aggregate_id", "revision"}),
         }
         logger.debug(f"new template: {obj['revision']}")
         cmd_res = request("POST", url, json=obj, timeout=5)
@@ -89,6 +89,8 @@ class TemplateRoot(TemplateAggregateRoot):
         logger.info(f"update_template called with template: {template_json}")
         for template in self.state:
             if template.aggregate_id == template.aggregate_id:
+                logger.debug(f"template: {template}")
+                logger.debug(f"template_json: {template_json}")
                 template.body = template_json["body"]
                 self.raise_template_updated_event(template)
                 return template.dict()
@@ -105,7 +107,7 @@ class TemplateRoot(TemplateAggregateRoot):
             "event_type": "template_deleted",
             "meta_data": {},
             "revision": template.revision + 1,
-            "data": template.dict(exclude={"aggregate_id"}),
+            "data": template.dict(exclude={"aggregate_id", "revision"}),
         }
         logger.debug(f"new template: {obj['revision']}")
         cmd_res = request("POST", str(self.settings.event_bus_url) + "/event", json=obj, timeout=5)
@@ -138,7 +140,7 @@ class TemplateRoot(TemplateAggregateRoot):
             "event_type": "template_created",
             "meta_data": {},
             "revision": 0,
-            "data": template.dict(exclude={"aggregate_id"}),
+            "data": template.dict(exclude={"aggregate_id", "revision"}),
         }
         cmd_res = request("POST", url, json=obj, timeout=5)
         logger.trace(f"cmd_res: {cmd_res.text}")  # type: ignore
